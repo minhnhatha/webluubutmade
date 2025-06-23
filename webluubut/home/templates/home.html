@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share it!</title>
+    <link rel="icon" type="image/x-icon" href={% static "favicon.ico" %}>
+    <link rel="stylesheet" type="text/css" href={% static "bootstrap_css.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "style.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "home_style.css" %}>
+</head>
+<body>
+    {% if use.is_authenticated %}
+        <h3>Ngày mới tốt lành, {{use}}!</h3>
+        <p><a href ="#" id="lglg"
+            class="btn btn-danger"
+            onclick="document.getElementById('logout-form').submit(); return false;">Đăng xuất</a></p>
+        <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
+        {% csrf_token %}
+        </form>
+        {% for folder in folders %}
+        <div class="text-center" style="display: inline-block;">
+            <a style="text-decoration: none; color: black;" href="{% url "list" id=folder.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="130" height="130">
+                <path fill="{{folder.color}}" stroke="black" stroke-width="1"
+                    d="M4 16c0-2.2 1.8-4 4-4h16l4 4h28c2.2 0 4 1.8 4 4v28c0 2.2-1.8 4-4 4H8c-2.2 0-4-1.8-4-4V16z"/>
+                <path fill="{{folder.color}}" stroke="black" stroke-width="1"
+                    d="M60 20H4v28c0 2.2 1.8 4 4 4h48c2.2 0 4-1.8 4-4V20z"/>
+                </svg>
+            <br>
+            <b>{{folder.name|truncatechars:10}}</b></a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="container">
+        <h1>Lưu Bút</h1>
+        <p>Nơi lưu giữ những kỷ niệm đáng yêu</p>
+        <div id="folder-grid" class="folder-grid">
+            <div id="empty-state">
+                <p>Tạo kỉ niệm dễ thương.</p>
+            </div>
+        </div>
+
+        <a href = {% url "new" %}><button class="btn btn-primary" id="add-new-btn">
+            Tạo kỷ niệm +
+        </button></a>
+        </div>
+    {% endif %}
+    <script src = {% static "bootstrap_js.js" %}></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share it! - New</title>
+    <link rel="icon" type="image/x-icon" href={% static "favicon.ico" %}>
+    <link rel="stylesheet" type="text/css" href={% static "bootstrap_css.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "style.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "home_style.css" %}>
+</head>
+<body>
+    {% if not pg %}
+        <p><a href = {% url "home" %} style="text-decoration: none; color: red"> << Quay lại</a></p>
+        <h3>Tạo thư mục
+            <svg width="1.17em" height="1.17em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="red">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                        2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09 
+                        C13.09 3.81 14.76 3 16.5 3 
+                        19.58 3 22 5.42 22 8.5 
+                        c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </h3>
+        <p><form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>
+                Mình có thể gọi bạn là gì nhỉ?<br>
+                {{folder_form.user}}
+            </p>
+            <p>
+                Đặt tên thư mục nào!<br>
+                {{ folder_form.name }}
+            </p>
+            <p>
+                Viết lời nhắn yêu thương:<br>
+                {{ folder_form.note }}
+            </p>
+            <p id = "ColorPick">
+                Chọn màu sắc của thư mục nhé: {{ folder_form.color }}
+            </p>
+            <p> Xem trước:
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100" height="100">
+                <path id="fol-1" fill="#f4d03f" stroke="black" stroke-width="1"
+                    d="M4 16c0-2.2 1.8-4 4-4h16l4 4h28c2.2 0 4 1.8 4 4v28c0 2.2-1.8 4-4 4H8c-2.2 0-4-1.8-4-4V16z"/>
+                <path id="fol-2" fill="#f4d03f" stroke="black" stroke-width="1"
+                    d="M60 20H4v28c0 2.2 1.8 4 4 4h48c2.2 0 4-1.8 4-4V20z"/>
+                </svg>
+            </p>
+            <p style="display: inline-block;">
+                <label for="id_files">Chọn một file:</label><br>
+                <input type="file" name="files" id="id_files">
+            </p>
+            <p style="display: inline-block;">
+                <label for="id_files">Chọn thư mục(nếu muốn chọn nhiều file):</label><br>
+                <input type="file" name="files" id="id_files" webkitdirectory multiple>
+            </p>
+            <p><button type="submit" name="action" value="upload" class="btn btn-success">Tiếp tục nào!</button></p>
+        </form></p>
+        <p>Lưu ý:</p>
+        <p>- Có thể up file và thư mục cùng 1 lúc, khi đó thư mục sẽ chứa file và các file trung thư mục</p>
+        <p>- Tối đa chỉ được 30 file thôi nha.</p>
+        <p>- Gửi mấy file nhẹ thôi nha.</p>
+        <script></script>
+    {% else %}
+    <div style="width: 100vw">
+        <a href = "{% url "new" %}"><button type="btn" class="btn btn-warning">Xóa và quay lại</button></a>
+        <a href = "{% url "send" %}" style="margin-left: auto;"><button type="btn" class="btn btn-danger">Gửi!</button></a>
+    </div>
+    <br>
+    <div class="text-center" style="width: 100vw">
+        <h3>Đổi tên file</h3>
+        <h5>Đổi tên sao cho dễ đọc nhất nha!</h5>
+    </div>
+    
+    {% for i, file, link in B %}
+        <div style="display: inline-block; margin-left: 20px;" class="text-center">
+             <a href = "{{link.file.url}}" style="text-decoration: none; color: black;" target="_blank">
+            {% if file in word %} <p><img src = "{% static "icon_file/word.png" %}" alt = "Sorry nhìu nha :_("></p>
+            {% elif file in excel %} <p><img src = "{% static "icon_file/excel.png" %}" alt = "Sorry nhìu nha :_("></p>
+            {% elif file in powerpoint %} <p><img src = "{% static "icon_file/powerpoint.png" %}" alt = "Sorry nhìu nha :_("></p>
+            {% elif file in picture %} <p><img src = "{{link.file.url}}" alt = "Sorry nhìu nha :_(" style="width:128px; height: 128px;"></p>
+            {% elif file in video %} <p><img src = "{% static "icon_file/video.png" %}" alt = "Sorry nhìu nha :_("></p>
+            {% elif file in sound %} <p><img src = "{% static "icon_file/sound.png" %}" alt = "Sorry nhìu nha :_("></p>
+            {% elif file == "txt" %} <p><img src = "{% static "icon_file/txt.png" %}" alt = "Sorry nhìu nha :_("></p>
+            {% elif file == "pdf" %} <p><img src = "{% static "icon_file/pdf.png" %}" alt = "Sorry nhìu nha :_("></p>
+            {% else %} <p><img src = "{% static "icon_file/other.png" %}" alt = "Sorry nhìu nha :_("></p>
+            {% endif %}
+             </a>
+            <a href="" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+            style="text-decoration: none; color: black;"
+            onclick="setValue('{{i}}', '{{file}}'); return false;">
+                <b>{{i|truncatechars:10}}.{{file}}</b>
+            </a>
+        </div>
+    {% endfor %}
+    <form method = "POST" >
+        {% csrf_token %}
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Đổi tên</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Đổi tên cho "<span id = "ChangeName"></span>"</p>
+                    <input type="text" id="myInput" name="file_name" style="width: 400px;" maxlength="255" required>
+                    <input type="text" name="change_name" id = "Inp" style="display: none;">
+                    <input type="text" name="ext" id = "Ext" style="display: none;">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bỏ</button>
+                    <button type="button submit" class="btn btn-primary" name="action" value="change">Đổi</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    <script>
+        {% if messages %}
+            {% for message in messages %}
+                alert("{{ message|escapejs }}");
+            {% endfor %}
+        {% endif %}
+    </script>
+    <script src = {% static "bootstrap_js.js" %}></script>
+    <script>
+        document.getElementById("ColorMaker").addEventListener("input", function() {
+            document.getElementById("fol-1").setAttribute("fill", document.getElementById("ColorMaker").value);
+            document.getElementById("fol-2").setAttribute("fill", document.getElementById("ColorMaker").value);
+        });
+        function setValue(value, val) {
+            document.getElementById("myInput").value = value;
+            document.getElementById("Inp").value = value;
+            document.getElementById("Ext").value = val;
+            document.getElementById("ChangeName").innerText = value + '.' + val;
+        }
+    </script>
+</body>
+</html>

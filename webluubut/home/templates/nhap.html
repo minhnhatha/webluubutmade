@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share it!</title>
+    <link rel="icon" type="image/x-icon" href={% static "favicon.ico" %}>
+    <link rel="stylesheet" type="text/css" href={% static "bootstrap_css.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "style.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "home_style.css" %}>
+</head>
+<body>
+    <div id = "OpacityDiv" style="display: none; background-color: black; height: 100vh; width: 100vw;">
+        <img src = "", alt = "Sorry nhìu nha :_(">
+    </div>
+    <div id = "BodyTag">
+        <p><a style="text-decoration: none; color: red;" href = "{% url "home" %}">Quay lại</a></p>
+        {% for i, file, link in B %}
+            <div style="display: inline-block; margin-left: 20px;" class="text-center">
+                {% if file in picture %}
+                <a href="" id = "PopUp"
+                style="text-decoration: none; color: black;" onclick = "BlackScreen('{{link.file.url}}'); return false;">
+                <p><img src = "{{link.file.url}}" alt = "Sorry nhìu nha :_(" style="width:128px; height: 128px;"></p>
+                {% else %}
+                <a href = "{{link.file.url}}" style="text-decoration: none; color: black;" target="_blank">
+                {% if file in word %} <p><img src = "{% static "icon_file/word.png" %}" alt = "Sorry nhìu nha :_("></p>
+                {% elif file in excel %} <p><img src = "{% static "icon_file/excel.png" %}" alt = "Sorry nhìu nha :_("></p>
+                {% elif file in powerpoint %} <p><img src = "{% static "icon_file/powerpoint.png" %}" alt = "Sorry nhìu nha :_("></p>
+                {% elif file in video %} <p><img src = "{% static "icon_file/video.png" %}" alt = "Sorry nhìu nha :_("></p>
+                {% elif file in sound %} <p><img src = "{% static "icon_file/sound.png" %}" alt = "Sorry nhìu nha :_("></p>
+                {% elif file == "txt" %} <p><img src = "{% static "icon_file/txt.png" %}" alt = "Sorry nhìu nha :_("></p>
+                {% elif file == "pdf" %} <p><img src = "{% static "icon_file/pdf.png" %}" alt = "Sorry nhìu nha :_("></p>
+                {% else %} <p><img src = "{% static "icon_file/other.png" %}" alt = "Sorry nhìu nha :_("></p>
+                {% endif %}
+                {% endif %}
+                <b>{{i|truncatechars:10}}.{{file}}</b></a>
+                {% comment %} <a href="" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"
+                style="text-decoration: none; color: black;"
+                onclick="setValue('{{i}}', '{{file}}'); return false;">
+                    
+                </a> {% endcomment %}
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        function BlackScreen(f){
+            document.getElementById("BodyTag").style.display = "none";
+            document.getElementById("OpacityDiv").style.display = "";
+            document.getElementById("OpacityDiv").style.opacity = "0.8";
+        }
+    </script>
+    <script src = {% static "bootstrap_js.js" %}></script>
+</body>
+</html>
